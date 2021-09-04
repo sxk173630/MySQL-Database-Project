@@ -1,0 +1,286 @@
+wampmysqld64, Version: 5.7.31 (MySQL Community Server (GPL)). started with:
+TCP Port: 3306, Named Pipe: /tmp/mysql.sock
+Time                 Id Command    Argument
+2021-05-07T02:17:11.850074Z	   36 Query	SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0
+2021-05-07T02:17:11.942614Z	   36 Query	SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0
+2021-05-07T02:17:12.038293Z	   36 Query	SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
+2021-05-07T02:17:12.132374Z	   36 Query	CREATE SCHEMA IF NOT EXISTS `Resturant` DEFAULT CHARACTER SET utf8
+2021-05-07T02:17:12.133108Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:12.226168Z	   36 Query	USE `Resturant`
+2021-05-07T02:17:12.226582Z	   36 Query	SELECT DATABASE()
+2021-05-07T02:17:12.318025Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`address` (
+  `Address_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `Sreet` VARCHAR(45) NULL DEFAULT NULL,
+  `City` VARCHAR(45) NULL DEFAULT NULL,
+  `Zip_Code` INT(5) NULL DEFAULT NULL,
+  `State` VARCHAR(2) NULL DEFAULT NULL,
+  PRIMARY KEY (`Address_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:12.318399Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:12.409858Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`customer` (
+  `Customer_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `First_Name` VARCHAR(25) NOT NULL,
+  `Last_name` VARCHAR(25) NOT NULL,
+  `Phone_No` VARCHAR(13) NULL DEFAULT NULL,
+  PRIMARY KEY (`Customer_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:12.410501Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:12.496727Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`employeetype` (
+  `EmployeeTypeID` INT(11) NOT NULL,
+  `Description` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`EmployeeTypeID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:12.497187Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:12.624694Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`employee` (
+  `Employee_id` INT(11) NOT NULL,
+  `First_name` VARCHAR(25) NOT NULL,
+  `Last_name` VARCHAR(25) NOT NULL,
+  `Email` VARCHAR(45) NULL DEFAULT NULL,
+  `AddressId` INT(11) NOT NULL,
+  `EmployeeTypeId` INT(11) NOT NULL,
+  PRIMARY KEY (`Employee_id`, `EmployeeTypeId`),
+  INDEX `Address_id_idx` (`AddressId` ASC) ,
+  INDEX `UserTypeID_idx` (`EmployeeTypeId` ASC) ,
+  CONSTRAINT `Address_id`
+    FOREIGN KEY (`AddressId`)
+    REFERENCES `resturant`.`address` (`Address_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `UserTypeID`
+    FOREIGN KEY (`EmployeeTypeId`)
+    REFERENCES `resturant`.`employeetype` (`EmployeeTypeID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:12.626132Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:12.729966Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`table` (
+  `Table_id` INT(11) NOT NULL,
+  `max_capacity` ENUM('1', '2', '3', '4', '5', '6', '7') NOT NULL,
+  `Is_Booked` TINYINT(4) NOT NULL,
+  PRIMARY KEY (`Table_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:12.730390Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:12.833882Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`kwik_kiosk` (
+  `Kiosk_id` INT(11) NOT NULL,
+  `order_placed` DATETIME NULL,
+  `TableId` INT(11) NOT NULL,
+  `CustomerId` INT(11) NOT NULL,
+  `EmployeeId` INT(11) NOT NULL,
+  PRIMARY KEY (`Kiosk_id`, `EmployeeId`, `CustomerId`, `TableId`),
+  INDEX `Table_id_idx` (`TableId` ASC) ,
+  INDEX `Customer_id_idx` (`CustomerId` ASC) ,
+  INDEX `Employee_id_idx` (`EmployeeId` ASC) ,
+  CONSTRAINT `Customerid`
+    FOREIGN KEY (`CustomerId`)
+    REFERENCES `resturant`.`customer` (`Customer_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `Employeeid`
+    FOREIGN KEY (`EmployeeId`)
+    REFERENCES `resturant`.`employee` (`Employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `Table_id`
+    FOREIGN KEY (`TableId`)
+    REFERENCES `resturant`.`table` (`Table_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:12.834382Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:12.939690Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`meals` (
+  `Meal_id` INT(11) NOT NULL,
+  `Name` VARCHAR(50) NOT NULL,
+  `Category` VARCHAR(15) NOT NULL,
+  `Price` DOUBLE NOT NULL,
+  PRIMARY KEY (`Meal_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:12.940035Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:13.033353Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`serves` (
+  `Ordered_date` DATETIME NOT NULL,
+  `EmployeeID` INT(11) NOT NULL,
+  `CustomerId` INT(11) NOT NULL,
+  PRIMARY KEY (`CustomerId`, `EmployeeID`),
+  INDEX `Employee_id_idx` (`EmployeeID` ASC) ,
+  INDEX `Customer_id_idx` (`CustomerId` ASC) ,
+  CONSTRAINT `Cust_id`
+    FOREIGN KEY (`CustomerId`)
+    REFERENCES `resturant`.`customer` (`Customer_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `Emp_id`
+    FOREIGN KEY (`EmployeeID`)
+    REFERENCES `resturant`.`employee` (`Employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:13.033786Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:13.134982Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`employee_prepares_meals` (
+  `Employee_id` INT(11) NOT NULL,
+  `Meal_id` INT(11) NOT NULL,
+  `Date` DATETIME NULL,
+  PRIMARY KEY (`Employee_id`, `Meal_id`),
+  INDEX `fk_employee_has_meals_meals1_idx` (`Meal_id` ASC) ,
+  INDEX `fk_employee_has_meals_employee1_idx` (`Employee_id` ASC) ,
+  CONSTRAINT `fk_employee_has_meals_employee1`
+    FOREIGN KEY (`Employee_id`)
+    REFERENCES `resturant`.`employee` (`Employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_employee_has_meals_meals1`
+    FOREIGN KEY (`Meal_id`)
+    REFERENCES `resturant`.`meals` (`Meal_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:13.135501Z	   36 Query	SHOW WARNINGS
+2021-05-07T02:17:13.225485Z	   36 Query	SET SQL_MODE=@OLD_SQL_MODE
+2021-05-07T02:17:13.317961Z	   36 Query	SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS
+2021-05-07T02:17:13.408528Z	   36 Query	SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS
+2021-05-07T02:17:13.499010Z	   36 Query	set global general_log=0
+wampmysqld64, Version: 5.7.31 (MySQL Community Server (GPL)). started with:
+TCP Port: 3306, Named Pipe: /tmp/mysql.sock
+Time                 Id Command    Argument
+2021-05-07T02:17:28.725863Z	   36 Query	SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0
+2021-05-07T02:17:28.816764Z	   36 Query	SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0
+2021-05-07T02:17:28.908469Z	   36 Query	SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
+2021-05-07T02:17:28.999472Z	   36 Query	CREATE SCHEMA IF NOT EXISTS `Resturant` DEFAULT CHARACTER SET utf8
+2021-05-07T02:17:29.089820Z	   36 Query	USE `Resturant`
+2021-05-07T02:17:29.090188Z	   36 Query	SELECT DATABASE()
+2021-05-07T02:17:29.176458Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`address` (
+  `Address_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `Sreet` VARCHAR(45) NULL DEFAULT NULL,
+  `City` VARCHAR(45) NULL DEFAULT NULL,
+  `Zip_Code` INT(5) NULL DEFAULT NULL,
+  `State` VARCHAR(2) NULL DEFAULT NULL,
+  PRIMARY KEY (`Address_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:30.685661Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`customer` (
+  `Customer_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `First_Name` VARCHAR(25) NOT NULL,
+  `Last_name` VARCHAR(25) NOT NULL,
+  `Phone_No` VARCHAR(13) NULL DEFAULT NULL,
+  PRIMARY KEY (`Customer_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:30.857109Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`employeetype` (
+  `EmployeeTypeID` INT(11) NOT NULL,
+  `Description` VARCHAR(45) NULL DEFAULT NULL,
+  PRIMARY KEY (`EmployeeTypeID`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:31.070211Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`employee` (
+  `Employee_id` INT(11) NOT NULL,
+  `First_name` VARCHAR(25) NOT NULL,
+  `Last_name` VARCHAR(25) NOT NULL,
+  `Email` VARCHAR(45) NULL DEFAULT NULL,
+  `AddressId` INT(11) NOT NULL,
+  `EmployeeTypeId` INT(11) NOT NULL,
+  PRIMARY KEY (`Employee_id`, `EmployeeTypeId`),
+  INDEX `Address_id_idx` (`AddressId` ASC) ,
+  INDEX `UserTypeID_idx` (`EmployeeTypeId` ASC) ,
+  CONSTRAINT `Address_id`
+    FOREIGN KEY (`AddressId`)
+    REFERENCES `resturant`.`address` (`Address_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `UserTypeID`
+    FOREIGN KEY (`EmployeeTypeId`)
+    REFERENCES `resturant`.`employeetype` (`EmployeeTypeID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:31.276697Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`table` (
+  `Table_id` INT(11) NOT NULL,
+  `max_capacity` ENUM('1', '2', '3', '4', '5', '6', '7') NOT NULL,
+  `Is_Booked` TINYINT(4) NOT NULL,
+  PRIMARY KEY (`Table_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:31.449750Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`kwik_kiosk` (
+  `Kiosk_id` INT(11) NOT NULL,
+  `order_placed` DATETIME NULL,
+  `TableId` INT(11) NOT NULL,
+  `CustomerId` INT(11) NOT NULL,
+  `EmployeeId` INT(11) NOT NULL,
+  PRIMARY KEY (`Kiosk_id`, `EmployeeId`, `CustomerId`, `TableId`),
+  INDEX `Table_id_idx` (`TableId` ASC) ,
+  INDEX `Customer_id_idx` (`CustomerId` ASC) ,
+  INDEX `Employee_id_idx` (`EmployeeId` ASC) ,
+  CONSTRAINT `Customerid`
+    FOREIGN KEY (`CustomerId`)
+    REFERENCES `resturant`.`customer` (`Customer_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `Employeeid`
+    FOREIGN KEY (`EmployeeId`)
+    REFERENCES `resturant`.`employee` (`Employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `Table_id`
+    FOREIGN KEY (`TableId`)
+    REFERENCES `resturant`.`table` (`Table_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:31.651738Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`meals` (
+  `Meal_id` INT(11) NOT NULL,
+  `Name` VARCHAR(50) NOT NULL,
+  `Category` VARCHAR(15) NOT NULL,
+  `Price` DOUBLE NOT NULL,
+  PRIMARY KEY (`Meal_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:31.860395Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`serves` (
+  `Ordered_date` DATETIME NOT NULL,
+  `EmployeeID` INT(11) NOT NULL,
+  `CustomerId` INT(11) NOT NULL,
+  PRIMARY KEY (`CustomerId`, `EmployeeID`),
+  INDEX `Employee_id_idx` (`EmployeeID` ASC) ,
+  INDEX `Customer_id_idx` (`CustomerId` ASC) ,
+  CONSTRAINT `Cust_id`
+    FOREIGN KEY (`CustomerId`)
+    REFERENCES `resturant`.`customer` (`Customer_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `Emp_id`
+    FOREIGN KEY (`EmployeeID`)
+    REFERENCES `resturant`.`employee` (`Employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:32.053387Z	   36 Query	CREATE TABLE IF NOT EXISTS `resturant`.`employee_prepares_meals` (
+  `Employee_id` INT(11) NOT NULL,
+  `Meal_id` INT(11) NOT NULL,
+  `Date` DATETIME NULL,
+  PRIMARY KEY (`Employee_id`, `Meal_id`),
+  INDEX `fk_employee_has_meals_meals1_idx` (`Meal_id` ASC) ,
+  INDEX `fk_employee_has_meals_employee1_idx` (`Employee_id` ASC) ,
+  CONSTRAINT `fk_employee_has_meals_employee1`
+    FOREIGN KEY (`Employee_id`)
+    REFERENCES `resturant`.`employee` (`Employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_employee_has_meals_meals1`
+    FOREIGN KEY (`Meal_id`)
+    REFERENCES `resturant`.`meals` (`Meal_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+2021-05-07T02:17:32.261085Z	   36 Query	SET SQL_MODE=@OLD_SQL_MODE
+2021-05-07T02:17:32.365953Z	   36 Query	SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS
+2021-05-07T02:17:32.461137Z	   36 Query	SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS
+2021-05-07T02:17:32.566032Z	   36 Query	set global general_log=0
